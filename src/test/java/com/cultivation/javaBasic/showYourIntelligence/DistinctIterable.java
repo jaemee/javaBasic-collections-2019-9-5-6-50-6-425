@@ -3,21 +3,22 @@ package com.cultivation.javaBasic.showYourIntelligence;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
+import java.util.function.Consumer;
 
-public class DistinctIterable<T> implements Iterable<T> {
-    private Iterable<T> iterable;
+public class DistinctIterable<Character> implements Iterable<Character> {
+    private Iterable<Character> iterable;
 
-    public DistinctIterable(Iterable<T> iterable) {
+    public DistinctIterable(Iterable<Character> iterable) {
         this.iterable = iterable;
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public Iterator<Character> iterator() {
         return new DistinctIterator<>(iterable.iterator());
     }
 
-    public List<T> toList() {
-        ArrayList<T> result = new ArrayList<>();
+    public List<Character> toList() {
+        ArrayList<Character> result = new ArrayList<>();
         this.forEach(result::add);
         return result;
     }
@@ -28,6 +29,8 @@ class DistinctIterator<E> implements Iterator<E> {
     // <--start
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final Iterator<E> iterator;
+    private List<Character> tempChar = new ArrayList<>();
+    private E checker;
 
     DistinctIterator(Iterator<E> iterator) {
         this.iterator = iterator;
@@ -35,12 +38,25 @@ class DistinctIterator<E> implements Iterator<E> {
 
     @Override
     public boolean hasNext() {
-        throw new NotImplementedException();
+        while(this.iterator.hasNext()){
+            checker = iterator.next();
+            if(tempChar.contains(checker)){
+                checker = iterator.next();
+            }else {
+                tempChar.add((Character)checker);
+                return iterator.hasNext();
+            }
+        }
+
+        return this.iterator.hasNext();
     }
 
     @Override
     public E next() {
-        throw new NotImplementedException();
+        return checker;
     }
+
+
+
     // --end->
 }
